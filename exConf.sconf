@@ -1,0 +1,34 @@
+=
+{name -> Mon site web} # Correspond au nom de vôtre action
+{url -> value}
++
+{versioning -> value}
+{option2 -> value}
+{option3 -> value}
+
+=
+{name -> Mon deuxième site} # Correspond au nom de vôtre deuxième action
+{url -> value}
++
+{option1 -> value}
+{option2 -> value}
+
+==
+{name -> Ma super tache}
+{second -> 10} #Lance les deux requêtes HTTP toutes les 10 secondes
++
+(Mon site web, Mon deuxième site)
+
+== # Lance la requête HTTP toutes les 2 minutes et 10 secondes
+{name -> Ma tache facile}
+{minute -> 2}
+{second -> 10}
++
+(Mon site web)
+
+==
+# Lance la requête HTTP toutes les 6 heures
+{name -> Ma tache facile}
+{hour -> 6}
++
+(Mon deuxième site)

@@ -7,7 +7,7 @@ typedef struct action{
     char* name;
     char* url;
     int maxDepth;
-    int versionning;
+    int versioning;
     char** type;
 }action;
 
@@ -24,6 +24,6 @@ long sizeOfFile(FILE* file);
 int countAction(FILE* file);
 int countTask(FILE* file);
 void initActionArray(struct action* actionArray, int sizeArray, FILE* file);
-void initTaskArray(struct task* taskArray, int sizeArray);
+void initTaskArray(struct task* taskArray, int sizeArray, FILE* file);
 int countOccurrences(FILE* file, char* word);
 

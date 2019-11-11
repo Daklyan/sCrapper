@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/void/CLionProjects/sCrapper/main.c
+main.h
+/home/void/CLionProjects/sCrapper/main.h
+
+/home/void/CLionProjects/sCrapper/main.h
+string.h
+-
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+
