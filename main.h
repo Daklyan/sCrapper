@@ -7,7 +7,7 @@ typedef struct action{
     char* name;
     char* url;
     int maxDepth;
-    int versioning;
+    int versionning;
     char** type;
 }action;
 

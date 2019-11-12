@@ -1,6 +1,6 @@
 #include "main.h"
 
-#define PATH "/home/void/CLionProjects/sCrapper/exConf.sconf"
+#define PATH "example.sconf"
 #define BUFFER_SIZE 4
 
 int main(int argc, char **argv) {
@@ -22,53 +22,56 @@ int main(int argc, char **argv) {
     action actionArray[nbAction];
     task taskArray[nbTask];
     initActionArray(actionArray, nbAction, file);
-    initTaskArray(taskArray, nbTask);
+    initTaskArray(taskArray, nbTask,file);
+    fclose(file);
     return 0;
 }
 
-//TODO initActionArray function, removing the last character may provoke a SIGSEGV core dumped
+
 void initActionArray(action *actionArray, int sizeArray, FILE *file) {
     char *word = malloc(24);
-    char *tmp = malloc(1024);
+    char *tmp = malloc(2048); // 2048 in case the URL is long
     long curPos = ftell(file);
     fseek(file, 0, SEEK_SET);
     int i;
     for (i = 0; i < sizeArray; ++i) {
         fscanf(file, "%s", word);
         while (strcmp(word, "=") != 0) {
-            fscanf(file, "%s", word);
-            // printf("%s",word);
             if (strchr(word, '#') != NULL) {
                 skipComment(file);
                 fscanf(file, "%s", word);
             }
             if (strcmp(word, "{name") == 0) {
-                fscanf(file, " -> %s", tmp);
-                tmp[strlen(tmp) - 1] = '\0';
+                fscanf(file, " -> %30[0-9a-zA-Z ]", tmp);
                 actionArray[i].name = tmp;
             }
             if (strcmp(word, "{url") == 0) {
-                fscanf(file, " -> %s", tmp);
-                tmp[strlen(tmp) - 1] = '\0';
+                fscanf(file, " -> %30[0-9a-zA-Z ]", tmp);
+                printf("%s",tmp);
                 actionArray[i].url = tmp;
             }
             if (strcmp(word, "{max-depth") == 0) {
-                fscanf(file, " -> %s", tmp);
+                fscanf(file, " -> %3[0-9]", tmp);
                 printf("%s", tmp);
                 actionArray[i].maxDepth = atoi(tmp);
             }
-            if (strcmp(word, "{versioning") == 0) {
-                fscanf(file, " -> %s", tmp);
+            if (strcmp(word, "{versionning") == 0) { //Verif le sujet pour le versionning
+                fscanf(file, " -> %3[0-9]", tmp);
                 printf("%s", tmp);
-                actionArray[i].versioning = atoi(tmp);
+                actionArray[i].versionning = atoi(tmp);
             }
+            fscanf(file, "%s", word);
         }
     }
+    fseek(file,curPos,SEEK_SET);
+    free(word);
+    free(tmp);
 }
+
 
 void initTaskArray(task *taskArray, int sizeArray, FILE *file) {
     char *word = malloc(24);
-    char *tmp = malloc(1024);
+    char *tmp = malloc(2048);
     long curPos = ftell(file);
     fseek(file, 0, SEEK_SET);
     int i;
@@ -81,25 +84,26 @@ void initTaskArray(task *taskArray, int sizeArray, FILE *file) {
                 fscanf(file, "%s", word);
             }
             if (strcmp(word, "name") == 0) {
-                fscanf(file, " -> %s", tmp);
-                tmp[strlen(tmp) - 1] = '\0';
+                fscanf(file, " -> %30[0-9a-zA-Z ]", tmp);
                 taskArray[i].name = tmp;
             }
             if (strcmp(word, "hour") == 0) {
-                fscanf(file, " -> %s", tmp);
+                fscanf(file, " -> %4[0-9]", tmp);
                 taskArray[i].hour = atoi(tmp);
             }
             if (strcmp(word, "minute") == 0) {
-                fscanf(file, " -> %s", tmp);
+                fscanf(file, " -> %2[0-9]", tmp);
                 taskArray[i].min = atoi(tmp);
             }
             if (strcmp(word, "second") == 0) {
-                fscanf(file, " -> %s", tmp);
+                fscanf(file, " -> %2[0-9]", tmp);
                 taskArray[i].sec = atoi(tmp);
             }
         }
     }
     fseek(file, curPos, SEEK_SET);
+    free(word);
+    free(tmp);
 }
 
 void skipComment(FILE *file) {
@@ -150,4 +154,3 @@ int countOccurrences(FILE *file, char *string) {
     }
     return count;
 }
-
