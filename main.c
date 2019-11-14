@@ -43,12 +43,16 @@ void initActionArray(action* actionArray, int sizeArray, FILE* file) {
     for (i = 0; i < sizeArray; ++i) {
         fscanf(file, "%s", word);
         if(strcmp(word,"=") == 0) {
-            while ((strcmp(word, "=") != 0 || strcmp(word, "==") != 0) && !feof(file)) {
+            while (!feof(file)) {
                 printf("%d : %s\n", i, word);
                 if (strchr(word, '#') != NULL) {
                     skipComment(file);
                     fscanf(file, "%s", word);
                 }
+		if (strcmp(word, "=") == 0 || strcmp(word, "==") == 0){
+			fseek(file, -2, SEEK_CUR);
+			break;
+		}
                 if (strcmp(word, "{name") == 0) {
                     fscanf(file, " -> %30[0-9a-zA-Z ]", tmp);
                     actionArray[i].name = tmp;
