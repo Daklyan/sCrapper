@@ -8,7 +8,7 @@
 {name -> My website} #Correspond to the name of your action
 {url -> value} #Url of the website
 +
-{max-depth -> 12}
+{option1 -> value}
 {option2 -> value}
 {option3 -> value}
 
@@ -16,8 +16,8 @@
 {name -> My second website} #Correspond to the name of your second action
 {url -> value}		    #URL of the website
 +
-{option1 -> value}
-{option2 -> value}
+{max-depth -> 12}
+{versionning -> on}
 
 ==
 {name -> My great task}
