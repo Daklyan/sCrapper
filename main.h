@@ -25,4 +25,6 @@ int countTask(FILE* file);
 void initActionArray(struct action* actionArray, int sizeArray, FILE* file);
 void initTaskArray(struct task* taskArray, int sizeArray, FILE* file);
 int countOccurrences(FILE* file, char* word);
+void freeActionArray(action* array, int sizeArray);
+void freeTaskArray(task* array, int sizeArray);
 
