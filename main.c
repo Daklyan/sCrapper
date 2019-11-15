@@ -17,18 +17,21 @@ int main(int argc, char** argv) {
     if (nbAction <= 0 || nbTask <= 0) {
         fprintf(stderr, "Error #2: Not enough task or actions to execute sCrapper\n");
         fprintf(stderr, "action count: %d, task count: %d", nbAction, nbTask);
-        exit(0);
+        exit(EXIT_FAILURE);
     }
     action actionArray[nbAction];
     task taskArray[nbTask];
     initActionArray(actionArray, nbAction, file);
     initTaskArray(taskArray, nbTask, file);
-    printf("%s, %s\n", actionArray[0].name, actionArray[0].url);
+
+    //Free everything
     fclose(file);
+    freeActionArray(actionArray, nbAction);
+    freeTaskArray(taskArray, nbTask);
     return 0;
 }
 
-//TODO Pb recup string, Pb de ptr?????
+
 /**
  * Function to initialize the array of action following the values of the sconf
  * @param actionArray Array of structures action
@@ -42,30 +45,33 @@ void initActionArray(action* actionArray, int sizeArray, FILE* file) {
     fseek(file, 0, SEEK_SET);
     fscanf(file, "%s", word);
     int i = 0;
-    while (!feof(file) && i < sizeArray) {
+    while (!feof(file) && i <
+                          sizeArray) {  //Read all the file until it's the end of the file or i > the number of actions counted before
         if (strcmp(word, "=") == 0) {
             while (!feof(file)) {
                 fscanf(file, "%s", word);
-                if (strcmp(word, "=") == 0 || strcmp(word, "==") == 0) { //Pas propre
-                    fseek(file, -1, SEEK_CUR);
+                printf("%d : %s\n", i, word);
+                if (strcmp(word, "=") == 0 ||
+                    strcmp(word, "==") == 0) { //If there is another task or action this action is finished
+                    fseek(file, -2, SEEK_CUR);
                     break;
                 }
-                if (strchr(word, '#') != NULL) {
+                if (strchr(word, '#') != NULL) { //If a # is present in the string it's a comment so we skip it
                     skipComment(file);
                     fscanf(file, "%s", word);
                 }
                 if (strcmp(word, "{name") == 0) {
                     fscanf(file, " ->  %30[0-9a-zA-Z ]", tmp);
-                    printf("%d - name : %s\n",i,tmp);
+                    printf("%d - name : %s\n", i, tmp);
                     actionArray[i].name = malloc(strlen(tmp));
-                    actionArray[i].name = tmp;
+                    strcpy(actionArray[i].name, tmp);
                 }
                 if (strcmp(word, "{url") == 0) {
-                    fscanf(file, " -> %s"/**%256[0-9a-zA-Z/.&?$:=*+-\"\']"**/, tmp);
+                    fscanf(file, " -> %s", tmp);
                     tmp[strlen(tmp) - 1] = '\0';
-                    printf("%d - url : %s\n",i,tmp);
+                    printf("%d - url : %s\n", i, tmp);
                     actionArray[i].url = malloc(strlen(tmp));
-                    actionArray[i].url = tmp;
+                    strcpy(actionArray[i].url, tmp);
                 }
                 if (strcmp(word, "{max-depth") == 0) {
                     fscanf(file, " -> %2[0-9]", tmp);
@@ -98,28 +104,30 @@ void initActionArray(action* actionArray, int sizeArray, FILE* file) {
  */
 void initTaskArray(task* taskArray, int sizeArray, FILE* file) {
     char* word = malloc(BUFFER_SIZE);
-    char* tmp = malloc(2048);
+    char* tmp = malloc(256);
     long curPos = ftell(file);
     fseek(file, 0, SEEK_SET);
     int i = 0;
 
-    while (!feof(file) && i < sizeArray) {
+    while (!feof(file) &&
+           i < sizeArray) { //Read all the file until it's the end of the file or i > the number of tasks counted before
         fscanf(file, "%s", word);
         if (strcmp(word, "==") == 0) {
             while (!feof(file)) {
                 fscanf(file, "%s", word);
-                if (strcmp(word, "==") != 0 && strcmp(word, "=") != 0) {
+                if (strcmp(word, "==") == 0 ||
+                    strcmp(word, "=") == 0) { //If there is another task or action this task is finished
                     fseek(file, -2, SEEK_CUR);
                     break;
                 }
-                if (strchr(word, '#') != NULL) {
+                if (strchr(word, '#') != NULL) { //If a # is present in the string it's a comment so we skip it
                     skipComment(file);
                     fscanf(file, "%s", word);
                 }
                 if (strcmp(word, "name") == 0) {
                     fscanf(file, " -> %30[0-9a-zA-Z ]", tmp);
                     taskArray[i].name = malloc(strlen(tmp));
-                    taskArray[i].name = tmp;
+                    strcpy(taskArray[i].name, tmp);
                 }
                 if (strcmp(word, "hour") == 0) {
                     fscanf(file, " -> %4[0-9]", tmp);
@@ -180,4 +188,25 @@ int countOccurrences(FILE* file, char* string) {
     }
     fseek(file, pos, SEEK_SET);
     return count;
+}
+
+void freeActionArray(action* array, int sizeArray) {
+    int i;
+    for (i = 0; i < sizeArray; ++i) {
+        if (array[i].name != NULL) {
+            free(array[i].name);
+        }
+        if (array[i].url != NULL) {
+            free(array[i].url);
+        }
+    }
+}
+
+void freeTaskArray(task* array, int sizeArray) {
+    int i;
+    for (i = 0; i < sizeArray; ++i) {
+        if (array[i].name != NULL) {
+            free(array[i].name);
+        }
+    }
 }
