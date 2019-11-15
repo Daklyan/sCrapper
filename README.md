@@ -14,7 +14,7 @@
 
 =
 {name -> My second website} #Correspond to the name of your second action
-{url -> value}		    #URL of the website
+{url -> https://wowSuchWebsite.com/veryIncredible}		    #URL of the website
 +
 {max-depth -> 12}
 {versionning -> on}
