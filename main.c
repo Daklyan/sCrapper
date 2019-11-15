@@ -23,6 +23,7 @@ int main(int argc, char** argv) {
     task taskArray[nbTask];
     initActionArray(actionArray, nbAction, file);
     initTaskArray(taskArray, nbTask, file);
+    
     //Free everything
     fclose(file);
     return 0;
@@ -72,9 +73,11 @@ void initActionArray(action* actionArray, int sizeArray, FILE* file) {
                 }
                 if (strcmp(word, "{versionning") == 0) {
                     fscanf(file, " -> %3[a-zA-Z]", tmp);
-                    if (strcmp(tmp, "on") == 0 || strcmp(tmp, "ON") == 0) {
+                    if (strcmp(tmp, "on") == 0 || strcmp(tmp, "ON") == 0 ||
+                        strcmp(tmp, "oN") == 0 || strcmp(tmp, "On") == 0) {
                         actionArray[i].versionning = 1;
                     } else {
+                        printf("versionning : %s\n", tmp);
                         actionArray[i].versionning = 0;
                     }
                 }
