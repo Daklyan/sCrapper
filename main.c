@@ -49,7 +49,6 @@ void initActionArray(action* actionArray, int sizeArray, FILE* file) {
         if (strcmp(word, "=") == 0) {
             while (!feof(file)) {
                 fscanf(file, "%s", word);
-                printf("%d : %s\n", i, word);
                 if (strcmp(word, "=") == 0 ||
                     strcmp(word, "==") == 0) { //If there is another task or action this action is finished
                     fseek(file, -2, SEEK_CUR);
@@ -61,14 +60,12 @@ void initActionArray(action* actionArray, int sizeArray, FILE* file) {
                 }
                 if (strcmp(word, "{name") == 0) {
                     fscanf(file, " ->  %30[0-9a-zA-Z ]", tmp);
-                    printf("%d - name : %s\n", i, tmp);
                     actionArray[i].name = malloc(strlen(tmp));
                     strcpy(actionArray[i].name, tmp);
                 }
                 if (strcmp(word, "{url") == 0) {
                     fscanf(file, " -> %s", tmp);
                     tmp[strlen(tmp) - 1] = '\0';
-                    printf("%d - url : %s\n", i, tmp);
                     actionArray[i].url = malloc(strlen(tmp));
                     strcpy(actionArray[i].url, tmp);
                 }
