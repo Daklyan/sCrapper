@@ -23,11 +23,8 @@ int main(int argc, char** argv) {
     task taskArray[nbTask];
     initActionArray(actionArray, nbAction, file);
     initTaskArray(taskArray, nbTask, file);
-
     //Free everything
     fclose(file);
-    freeActionArray(actionArray, nbAction);
-    freeTaskArray(taskArray, nbTask);
     return 0;
 }
 
@@ -183,25 +180,4 @@ int countOccurrences(FILE* file, char* string) {
     }
     fseek(file, pos, SEEK_SET);
     return count;
-}
-
-void freeActionArray(action* array, int sizeArray) {
-    int i;
-    for (i = 0; i < sizeArray; ++i) {
-        if (array[i].name != NULL) {
-            free(array[i].name);
-        }
-        if (array[i].url != NULL) {
-            free(array[i].url);
-        }
-    }
-}
-
-void freeTaskArray(task* array, int sizeArray) {
-    int i;
-    for (i = 0; i < sizeArray; ++i) {
-        if (array[i].name != NULL) {
-            free(array[i].name);
-        }
-    }
 }
