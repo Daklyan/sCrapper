@@ -21,15 +21,14 @@ int main(int argc, char** argv) {
     }
     action actionArray[nbAction];
     task taskArray[nbTask];
-    printf("%d\n%d", nbAction, nbTask);
-    // initActionArray(actionArray, nbAction, file);
-    //initTaskArray(taskArray, nbTask, file);
-    // printf("%s, %s\n", actionArray[0].name, actionArray[0].url);
+    initActionArray(actionArray, nbAction, file);
+    initTaskArray(taskArray, nbTask, file);
+    printf("%s, %s\n", actionArray[0].name, actionArray[0].url);
     fclose(file);
     return 0;
 }
 
-//TODO Cf l'autre init
+//TODO Pb recup string, Pb de ptr?????
 /**
  * Function to initialize the array of action following the values of the sconf
  * @param actionArray Array of structures action
@@ -42,12 +41,10 @@ void initActionArray(action* actionArray, int sizeArray, FILE* file) {
     long curPos = ftell(file);
     fseek(file, 0, SEEK_SET);
     fscanf(file, "%s", word);
-    int i;
-    for (i = 0; i < sizeArray; ++i) {
-        printf("%d : %s\n", i, word);
+    int i = 0;
+    while (!feof(file) && i < sizeArray) {
         if (strcmp(word, "=") == 0) {
             while (!feof(file)) {
-                printf("%d : %s\n", i, word);
                 fscanf(file, "%s", word);
                 if (strcmp(word, "=") == 0 || strcmp(word, "==") == 0) { //Pas propre
                     fseek(file, -1, SEEK_CUR);
@@ -58,13 +55,16 @@ void initActionArray(action* actionArray, int sizeArray, FILE* file) {
                     fscanf(file, "%s", word);
                 }
                 if (strcmp(word, "{name") == 0) {
-                    fscanf(file, " -> %s"/** %30[0-9a-zA-Z ]**/, tmp);
+                    fscanf(file, " ->  %30[0-9a-zA-Z ]", tmp);
+                    printf("%d - name : %s\n",i,tmp);
+                    actionArray[i].name = malloc(strlen(tmp));
                     actionArray[i].name = tmp;
                 }
                 if (strcmp(word, "{url") == 0) {
                     fscanf(file, " -> %s"/**%256[0-9a-zA-Z/.&?$:=*+-\"\']"**/, tmp);
                     tmp[strlen(tmp) - 1] = '\0';
-                    // printf("%s\n",tmp);
+                    printf("%d - url : %s\n",i,tmp);
+                    actionArray[i].url = malloc(strlen(tmp));
                     actionArray[i].url = tmp;
                 }
                 if (strcmp(word, "{max-depth") == 0) {
@@ -80,6 +80,7 @@ void initActionArray(action* actionArray, int sizeArray, FILE* file) {
                     }
                 }
             }
+            ++i;
         }
         fscanf(file, "%s", word);
     }
@@ -88,7 +89,7 @@ void initActionArray(action* actionArray, int sizeArray, FILE* file) {
     free(tmp);
 }
 
-//TODO Changer la condition du while + possiblement un if qui englobe le while
+//TODO même pb que pour initActionArray
 /**
  * Function to initialize the array of tasks following the values of the sconf
  * @param taskArray array of structures task
@@ -100,14 +101,15 @@ void initTaskArray(task* taskArray, int sizeArray, FILE* file) {
     char* tmp = malloc(2048);
     long curPos = ftell(file);
     fseek(file, 0, SEEK_SET);
-    int i;
-    for (i = 0; i < sizeArray; ++i) {
+    int i = 0;
+
+    while (!feof(file) && i < sizeArray) {
         fscanf(file, "%s", word);
-        if (strcmp("==", word) == 0) {
+        if (strcmp(word, "==") == 0) {
             while (!feof(file)) {
-                printf("%s", word);
                 fscanf(file, "%s", word);
-                if (strcmp(word, "=") == 0 || strcmp(word, "==") == 0) {
+                if (strcmp(word, "==") != 0 && strcmp(word, "=") != 0) {
+                    fseek(file, -2, SEEK_CUR);
                     break;
                 }
                 if (strchr(word, '#') != NULL) {
@@ -116,6 +118,7 @@ void initTaskArray(task* taskArray, int sizeArray, FILE* file) {
                 }
                 if (strcmp(word, "name") == 0) {
                     fscanf(file, " -> %30[0-9a-zA-Z ]", tmp);
+                    taskArray[i].name = malloc(strlen(tmp));
                     taskArray[i].name = tmp;
                 }
                 if (strcmp(word, "hour") == 0) {
@@ -131,6 +134,7 @@ void initTaskArray(task* taskArray, int sizeArray, FILE* file) {
                     taskArray[i].sec = atoi(tmp);
                 }
             }
+            ++i;
         }
     }
     fseek(file, curPos, SEEK_SET);
