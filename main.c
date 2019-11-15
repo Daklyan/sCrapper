@@ -119,20 +119,20 @@ void initTaskArray(task* taskArray, int sizeArray, FILE* file) {
                     skipComment(file);
                     fscanf(file, "%s", word);
                 }
-                if (strcmp(word, "name") == 0) {
+                if (strcmp(word, "{name") == 0) {
                     fscanf(file, " -> %30[0-9a-zA-Z ]", tmp);
                     taskArray[i].name = malloc(strlen(tmp));
                     strcpy(taskArray[i].name, tmp);
                 }
-                if (strcmp(word, "hour") == 0) {
+                if (strcmp(word, "{hour") == 0) {
                     fscanf(file, " -> %4[0-9]", tmp);
                     taskArray[i].hour = atoi(tmp);
                 }
-                if (strcmp(word, "minute") == 0) {
+                if (strcmp(word, "{minute") == 0) {
                     fscanf(file, " -> %2[0-9]", tmp);
                     taskArray[i].min = atoi(tmp);
                 }
-                if (strcmp(word, "second") == 0) {
+                if (strcmp(word, "{second") == 0) {
                     fscanf(file, " -> %2[0-9]", tmp);
                     taskArray[i].sec = atoi(tmp);
                 }
