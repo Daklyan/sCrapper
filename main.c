@@ -45,8 +45,7 @@ void initActionArray(action* actionArray, int sizeArray, FILE* file) {
     fseek(file, 0, SEEK_SET);
     fscanf(file, "%s", word);
     int i = 0;
-    while (!feof(file) && i <
-                          sizeArray) {  //Read all the file until it's the end of the file or i > the number of actions counted before
+    while (!feof(file) && i < sizeArray) {  //Read all the file until it's the end of the file or i > the number of actions counted before
         if (strcmp(word, "=") == 0) {
             while (!feof(file)) {
                 fscanf(file, "%s", word);
@@ -109,8 +108,7 @@ void initTaskArray(task* taskArray, int sizeArray, FILE* file) {
     fseek(file, 0, SEEK_SET);
     int i = 0;
 
-    while (!feof(file) &&
-           i < sizeArray) { //Read all the file until it's the end of the file or i > the number of tasks counted before
+    while (!feof(file) && i < sizeArray) { //Read all the file until it's the end of the file or i > the number of tasks counted before
         fscanf(file, "%s", word);
         if (strcmp(word, "==") == 0) {
             while (!feof(file)) {
