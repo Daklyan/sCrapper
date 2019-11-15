@@ -20,8 +20,6 @@ typedef struct task{
 
 void skipComment(FILE* file);
 long sizeOfFile(FILE* file);
-int countAction(FILE* file);
-int countTask(FILE* file);
 void initActionArray(struct action* actionArray, int sizeArray, FILE* file);
 void initTaskArray(struct task* taskArray, int sizeArray, FILE* file);
 int countOccurrences(FILE* file, char* word);
