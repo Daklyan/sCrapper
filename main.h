@@ -15,13 +15,13 @@ typedef struct task{
     short sec;
     short min;
     short hour;
-    /*char** actionsName;*/action* actionArray;
+    char** actionsName;
     int sizeActionArray;
 }task;
 
 void skipComment(FILE* file);
 long sizeOfFile(FILE* file);
 void initActionArray(struct action* actionArray, int sizeArray, FILE* file);
-void initTaskArray(task* taskArray, int nbTask, action* actionArray, int nbAction, FILE* file);
+void initTaskArray(task* taskArray, int nbTask, FILE* file);
 int countOccurrences(FILE* file, char* word);
-void storeActions(task* taskArray, int index, action* actionArray, int sizeAction, FILE* file);
+void storeActions(task* taskArray, int index, FILE* file);
