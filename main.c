@@ -22,9 +22,9 @@ int main(int argc, char** argv) {
     action actionArray[nbAction];
     task taskArray[nbTask];
     initActionArray(actionArray, nbAction, file);
-    initTaskArray(taskArray, nbTask, file);
-    
-    //Free everything
+    initTaskArray(taskArray, nbTask, actionArray, nbAction, file);
+
+    //Free
     fclose(file);
     return 0;
 }
@@ -32,8 +32,8 @@ int main(int argc, char** argv) {
 
 /**
  * Function to initialize the array of action following the values of the sconf
- * @param actionArray Array of structures action
- * @param sizeArray
+ * @param actionArray array of struct action
+ * @param sizeArray size of the array of actions
  * @param file sconf file
  */
 void initActionArray(action* actionArray, int sizeArray, FILE* file) {
@@ -91,14 +91,15 @@ void initActionArray(action* actionArray, int sizeArray, FILE* file) {
     free(tmp);
 }
 
-//TODO même pb que pour initActionArray
 /**
- * Function to initialize the array of tasks following the values of the sconf
- * @param taskArray array of structures task
- * @param sizeArray
+ * Initialize the array of task following the sconf file instructions
+ * @param taskArray array of struct task
+ * @param sizeArray size of the array of tasks
+ * @param actionArray array of struct action
+ * @param sizeAction size of the array of actions
  * @param file sconf file
  */
-void initTaskArray(task* taskArray, int sizeArray, FILE* file) {
+void initTaskArray(task* taskArray, int sizeArray, action* actionArray, int sizeAction, FILE* file) {
     char* word = malloc(BUFFER_SIZE);
     char* tmp = malloc(256);
     long curPos = ftell(file);
@@ -125,7 +126,7 @@ void initTaskArray(task* taskArray, int sizeArray, FILE* file) {
                     strcpy(taskArray[i].name, tmp);
                 }
                 if (strcmp(word, "{hour") == 0) {
-                    fscanf(file, " -> %4[0-9]", tmp);
+                    fscanf(file, " -> %2[0-9]", tmp);
                     taskArray[i].hour = atoi(tmp);
                 }
                 if (strcmp(word, "{minute") == 0) {
@@ -135,6 +136,10 @@ void initTaskArray(task* taskArray, int sizeArray, FILE* file) {
                 if (strcmp(word, "{second") == 0) {
                     fscanf(file, " -> %2[0-9]", tmp);
                     taskArray[i].sec = atoi(tmp);
+                }
+                if (strchr(word, '(') != NULL) {
+                    fseek(file, -(strlen(word)), SEEK_CUR);
+                    storeActions(taskArray, i, actionArray, sizeAction, file);
                 }
             }
             ++i;
@@ -183,4 +188,31 @@ int countOccurrences(FILE* file, char* string) {
     }
     fseek(file, pos, SEEK_SET);
     return count;
+}
+
+/**
+ * Store the actions named in the sconf for the current task
+ * @param taskArray array of struct task
+ * @param index index of the task to put the actions
+ * @param actionArray array of struct action
+ * @param sizeAction size of the array of actions
+ * @param file sconf file
+ */
+void storeActions(task* taskArray, int index, action* actionArray, int sizeAction, FILE* file) {
+    char* tmp = malloc(50);
+    int count = 0;
+    int i;
+    do {
+        fscanf(file, "%50[0-9A-Za-z )]", tmp);
+        if (strchr(tmp, ')') == 0) {
+            tmp[strlen(tmp) - 1] = '\0';
+        }
+        for (i = 0; i < sizeAction; ++i) {
+            if (strcmp(actionArray[i].name, tmp) == 0) {
+                taskArray[index].actionArray[count++] = actionArray[i];
+            }
+        }
+    } while (strchr(tmp, ')') == NULL && !feof(file));
+    taskArray[index].sizeActionArray = count;
+    free(tmp);
 }
