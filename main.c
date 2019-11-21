@@ -205,5 +205,6 @@ void storeActions(task* taskArray, int index, FILE* file) {
         fscanf(file,"%50[A-Za-z )]",tmp);
         strcpy(taskArray[index].actionsName[count++],tmp);
     } while (!feof(file) && strchr(tmp, ')') == NULL);
+    taskArray[index].sizeActionArray = count;
     free(tmp);
 }
