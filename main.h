@@ -3,20 +3,22 @@
 #include <string.h>
 #include <curl/curl.h>
 
+typedef char* string;
+
 typedef struct action{
-    char* name;
-    char* url;
+    string name;
+    string url;
     int maxDepth;
     int versionning;
-    char** type;
+    string* type;
 }action;
 
 typedef struct task{
-    char* name;
+    string name;
     short sec;
     short min;
     short hour;
-    char** actionsName;
+    string* actionsName;
     int sizeActionArray;
 }task;
 
