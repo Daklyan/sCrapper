@@ -1,6 +1,6 @@
 #include "main.h"
 
-string findHREF(char *fname) {
+string findHREF(string fname) {
 	FILE *fp;
 	int line_num = 1;
 	int find_result = 0;
@@ -33,7 +33,7 @@ string findHREF(char *fname) {
    	return NULL;
 }
 
-void getPage(string url, const char* fileName){
+void getPage(string url, string fileName){
   CURL* curl;
   CURLcode res;
   FILE* file;
