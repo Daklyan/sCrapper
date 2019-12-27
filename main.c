@@ -24,6 +24,26 @@ int main(int argc, char** argv) {
     initActionArray(actionArray, nbAction, file);
     initTaskArray(taskArray, nbTask, file);
 
+/*************************  REDO PART ***************************
+    for(int i = 0; i < nbTask; ++i){
+            for(int j = 0; j< nbAction; ++j){
+                if(actionArray[j].name == taskArray[i].actionsName){
+                    int t = 0;
+                    do{
+                        char url[512];
+                        strcpy(url, actionArray[j].name);
+                        get_page(actionArray[j].url, "filename.txt");
+                        for(int x = 0; x < 512; ++x){
+                            url[x] = 0;
+                        }
+                        char * newURL = findHREF("filename.txt");
+                        ++t;
+                    } while(t <= actionArray[j].maxDepth);
+                }
+            }
+    }
+    ************************************************************/
+
     //Free
     fclose(file);
     return 0;
@@ -38,18 +58,16 @@ int main(int argc, char** argv) {
  */
 void initActionArray(action* actionArray, int sizeArray, FILE* file) {
     char* word = malloc(BUFFER_SIZE);
-    char* tmp = malloc(256); // 256 in case the URL is long
+    char* tmp = malloc(sizeof(char) * 256); // 256 in case the URL is long
     long curPos = ftell(file);
     fseek(file, 0, SEEK_SET);
     fscanf(file, "%s", word);
     int i = 0;
-    while (!feof(file) && i <
-                          sizeArray) {  //Read all the file until it's the end of the file or i > the number of actions counted before
+    while (!feof(file) && i < sizeArray) {  //Read all the file until it's the end of the file or i > the number of actions counted before
         if (strcmp(word, "=") == 0) {
             while (!feof(file)) {
                 fscanf(file, "%s", word);
-                if (strcmp(word, "=") == 0 ||
-                    strcmp(word, "==") == 0) { //If there is another task or action this action is finished
+                if (strcmp(word, "=") == 0 || strcmp(word, "==") == 0) { //If there is another task or action this action is finished
                     fseek(file, -2, SEEK_CUR);
                     break;
                 }
@@ -101,20 +119,18 @@ void initActionArray(action* actionArray, int sizeArray, FILE* file) {
  * @param file sconf file
  */
 void initTaskArray(task* taskArray, int sizeArray, FILE* file) {
-    char* word = malloc(BUFFER_SIZE);
-    char* tmp = malloc(256);
+    char* word = malloc(sizeof(char) * BUFFER_SIZE);
+    char* tmp = malloc(sizeof(char) * 256);
     long curPos = ftell(file);
     fseek(file, 0, SEEK_SET);
     int i = 0;
 
-    while (!feof(file) &&
-           i < sizeArray) { //Read all the file until it's the end of the file or i > the number of tasks counted before
+    while (!feof(file) && i < sizeArray) { //Read all the file until it's the end of the file or i > the number of tasks counted before
         fscanf(file, "%s", word);
         if (strcmp(word, "==") == 0) {
             while (!feof(file)) {
                 fscanf(file, "%s", word);
-                if (strcmp(word, "==") == 0 ||
-                    strcmp(word, "=") == 0) { //If there is another task or action this task is finished
+                if (strcmp(word, "==") == 0 || strcmp(word, "=") == 0) { //If there is another task or action this task is finished
                     fseek(file, -2, SEEK_CUR);
                     break;
                 }
@@ -181,7 +197,7 @@ int countOccurrences(FILE* file, char* string) {
     int count = 0;
     long pos = ftell(file);
     fseek(file, 0, SEEK_SET);
-    char* str = malloc(BUFFER_SIZE);
+    char* str = malloc(sizeof(char) * BUFFER_SIZE);
     while (!feof(file)) {
         fscanf(file, "%s", str);
         if (strcmp(str, string) == 0) {
@@ -199,12 +215,12 @@ int countOccurrences(FILE* file, char* string) {
  * @param file sconf file
  */
 void storeActions(task* taskArray, int index, FILE* file) {
-    char* tmp = malloc(50);
+    char* tmp = malloc(sizeof(char) * BUFFER_SIZE);
     int count = 0;
     do {
-        fscanf(file,"%50[A-Za-z )]",tmp);
-        strcpy(taskArray[index].actionsName[count++],tmp);
+        fscanf(file, "%50[A-Za-z )]", tmp);
+        strcpy(taskArray[index].actionsName[count++], tmp);
     } while (!feof(file) && strchr(tmp, ')') == NULL);
-    taskArray[index].sizeActionArray = count;
     free(tmp);
 }
+
