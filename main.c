@@ -57,8 +57,8 @@ int main(int argc, char** argv) {
  * @param file sconf file
  */
 void initActionArray(action* actionArray, int sizeArray, FILE* file) {
-    char* word = malloc(BUFFER_SIZE);
-    char* tmp = malloc(sizeof(char) * 256); // 256 in case the URL is long
+    string word = malloc(BUFFER_SIZE);
+    string tmp = malloc(sizeof(char) * 256); // 256 in case the URL is long
     long curPos = ftell(file);
     fseek(file, 0, SEEK_SET);
     fscanf(file, "%s", word);
@@ -119,8 +119,8 @@ void initActionArray(action* actionArray, int sizeArray, FILE* file) {
  * @param file sconf file
  */
 void initTaskArray(task* taskArray, int sizeArray, FILE* file) {
-    char* word = malloc(sizeof(char) * BUFFER_SIZE);
-    char* tmp = malloc(sizeof(char) * 256);
+    string word = malloc(sizeof(char) * BUFFER_SIZE);
+    string tmp = malloc(sizeof(char) * 256);
     long curPos = ftell(file);
     fseek(file, 0, SEEK_SET);
     int i = 0;
@@ -193,14 +193,14 @@ long sizeOfFile(FILE* file) {
  * @param string word we search for
  * @return total count of the word in a the file
  */
-int countOccurrences(FILE* file, char* string) {
+int countOccurrences(FILE* file, string str) {
     int count = 0;
     long pos = ftell(file);
     fseek(file, 0, SEEK_SET);
-    char* str = malloc(sizeof(char) * BUFFER_SIZE);
+    string strTmp = malloc(sizeof(char) * BUFFER_SIZE);
     while (!feof(file)) {
-        fscanf(file, "%s", str);
-        if (strcmp(str, string) == 0) {
+        fscanf(file, "%s", strTmp);
+        if (strcmp(strTmp, str) == 0) {
             ++count;
         }
     }
@@ -215,7 +215,7 @@ int countOccurrences(FILE* file, char* string) {
  * @param file sconf file
  */
 void storeActions(task* taskArray, int index, FILE* file) {
-    char* tmp = malloc(sizeof(char) * BUFFER_SIZE);
+    string tmp = malloc(sizeof(char) * BUFFER_SIZE);
     int count = 0;
     do {
         fscanf(file, "%50[A-Za-z )]", tmp);
