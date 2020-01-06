@@ -192,14 +192,14 @@ long sizeOfFile(FILE* file) {
  * @param string word we search for
  * @return total count of the word in a the file
  */
-int countOccurrences(FILE* file, string string) {
+int countOccurrences(FILE* file, string str1) {
     int count = 0;
     long pos = ftell(file);
     fseek(file, 0, SEEK_SET);
-    string str = malloc(sizeof(char) * BUFFER_SIZE);
+    string str2 = malloc(sizeof(char) * BUFFER_SIZE);
     while (!feof(file)) {
-        fscanf(file, "%s", str);
-        if (strcmp(str, string) == 0) {
+        fscanf(file, "%s", str2);
+        if (strcmp(str1, str2) == 0) {
             ++count;
         }
     }
